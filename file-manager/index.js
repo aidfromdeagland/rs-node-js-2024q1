@@ -1,5 +1,6 @@
-import { EOL } from 'os';
-const usernameRegexp = /^[a-z0-9_-]$/
+import { EOL, homedir } from 'os';
+import { } from 'path';
+const usernameRegexp = /^[a-z0-9_-]$/;
 
 let userName = '';
 
@@ -13,6 +14,10 @@ const setNameFromArgs = () => {
   userName = userNameEntry[1];
 };
 
+const printCurrentDirectory = () => {
+  process.stdout.write(`You are currently in ${process.cwd()}${EOL}`);
+}
+
 setNameFromArgs();
 
 process.on('exit', () => {
@@ -20,3 +25,5 @@ process.on('exit', () => {
 })
 
 process.stdout.write(`Welcome to the File Manager, ${userName}!${EOL}`);
+process.chdir(homedir());
+printCurrentDirectory();
