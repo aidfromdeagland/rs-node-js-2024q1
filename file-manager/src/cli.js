@@ -72,7 +72,7 @@ const setName = (args) => {
     throw new Error(`name is not provided`);
   }
 
-  userName = userNameEntry[1];
+  userName = userNameEntry[1] || 'Incognito';
 };
 
 export const start = (args) => {
