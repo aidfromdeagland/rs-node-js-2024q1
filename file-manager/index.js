@@ -1,7 +1,6 @@
 import { EOL, homedir } from 'os';
 import { } from 'path';
 import { readdir } from 'node:fs/promises';
-const usernameRegexp = /^[a-z0-9_-]$/;
 const redPrintColor = '\x1b[31m';
 const resetPrintColor = '\x1b[0m';
 
@@ -30,7 +29,9 @@ const changeDirectory = (path = './') => {
 }
 
 const handleUserInput = (data) => {
-  if (data === 'up') {
+  if (data === '.exit') {
+    process.exit();
+  } else if (data === 'up') {
     changeDirectory('../');
     printCurrentDirectory();
   } else if (data.startsWith('cd ')) {
@@ -87,12 +88,11 @@ const readDirectory = async (path = './') => {
 
 setNameFromArgs();
 
-process.on('beforeExit', () => {
+process.on('exit', () => {
   process.stdout.write(`Thank you for using File Manager, ${userName}, goodbye!${EOL}`);
 })
 
 process.on('SIGINT', () => {
-  process.stdout.write(`Thank you for using File Manager, ${userName}, goodbye!${EOL}`);
   process.exit();
 })
 
