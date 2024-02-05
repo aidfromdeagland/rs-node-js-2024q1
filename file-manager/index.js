@@ -1,6 +1,7 @@
 import { EOL, homedir } from 'os';
 import { } from 'path';
 import { readdir } from 'node:fs/promises';
+import * as customFs from './src/file-operations.js';
 const redPrintColor = '\x1b[31m';
 const resetPrintColor = '\x1b[0m';
 
@@ -28,7 +29,7 @@ const changeDirectory = (path = './') => {
   }
 }
 
-const handleUserInput = (data) => {
+const handleUserInput = async (data) => {
   if (data === '.exit') {
     process.exit();
   } else if (data === 'up') {
@@ -46,6 +47,9 @@ const handleUserInput = (data) => {
       readDirectory();
     }
     printCurrentDirectory();
+  } else if (data.startsWith('cat ')) {
+    const route = data.slice(4);
+    await customFs.read(route, process.stdout);
   } else {
     process.stdout.write(`${redPrintColor}Invalid input${EOL}${resetPrintColor}`);
   }
@@ -94,10 +98,22 @@ process.on('exit', () => {
 
 process.on('SIGINT', () => {
   process.exit();
+});
+
+process.on('SIGTERM', () => {
+  process.exit();
 })
 
 process.on('error', () => {
-  process.stdout.write('Operation failed');
+  process.stdout.write(`Operation failed${EOL}`);
+});
+
+process.on('unhandledRejection', () => {
+  process.stdout.write(`Operation failed${EOL}`);
+});
+
+process.on('uncaughtException', () => {
+  process.stdout.write(`Operation failed${EOL}`);
 });
 
 process.stdout.write(`Welcome to the File Manager, ${userName}!${EOL}`);
