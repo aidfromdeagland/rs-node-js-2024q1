@@ -3,7 +3,5 @@ export const printColors = {
   reset: '\x1b[0m',
 }
 
-// export const whiteSpaceSplitRegex = /[^\s"']+|"([^"]*)"|'([^']*)'/;
-// export const whiteSpaceSplitRegex = /[^\s]+|".*?"/;
 export const whiteSpaceSplitRegex = (/(?:[^\s"]+|"[^"]*")+/g);
 export const quoteRegex = /\'|\"/g;
