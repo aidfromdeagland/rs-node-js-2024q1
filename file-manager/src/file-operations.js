@@ -39,7 +39,11 @@ export const copy = async (filePath, destinationDirectory) => {
   await finished(writer);
 };
 
+export const remove = async (filePath) => {
+  await fsPromises.rm(filePath);
+};
+
 export const move = async (filePath, destinationDirectory) => {
   await copy(filePath, destinationDirectory);
-  await fsPromises.rm(filePath);
+  await remove(filePath);
 };
