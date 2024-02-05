@@ -1,5 +1,7 @@
 import { EOL } from 'node:os';
+import { join } from 'node:path';
 import { createReadStream } from 'node:fs';
+import { appendFile } from 'node:fs/promises';
 import { finished } from 'node:stream/promises';
 
 export const read = async (path, writableStream) => {
@@ -14,4 +16,9 @@ export const read = async (path, writableStream) => {
   })
 
   await finished(reader);
-}
+};
+
+export const add = async (fileName, path = './') => {
+  const filePath = join(path, fileName);
+  await appendFile(filePath, '');
+};

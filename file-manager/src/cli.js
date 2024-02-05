@@ -23,6 +23,9 @@ const handleList = async (args) => {
 const handleConcatenation = async (args) => {
   await FileOps.read(args[0], process.stdout);
 };
+const handleAdd = async (args) => {
+  await FileOps.add(args[0], process.cwd());
+}
 
 const commandHandlers = {
   ['.exit']: handleExit,
@@ -30,6 +33,7 @@ const commandHandlers = {
   ['cd']: handleChangeDirectory,
   ['ls']: handleList,
   ['cat']: handleConcatenation,
+  ['add']: handleAdd,
 };
 
 const printCurrentDirectory = () => {
