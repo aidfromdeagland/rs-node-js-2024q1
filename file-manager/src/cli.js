@@ -6,6 +6,7 @@ import * as DirectoryOps from './directory-operations.js';
 import * as NavOps from './navigation-operations.js';
 import * as OsOps from './os-operations.js';
 import * as HashOps from './hash-operations.js';
+import * as CompressOps from './compress-operations.js';
 
 const invalidInputMessage = `${printColors.red}Invalid input${EOL}${printColors.reset}`;
 const operationFailedMessage = `${printColors.red}Operation failed${EOL}${printColors.reset}`;
@@ -55,6 +56,12 @@ const handleHash = async (args) => {
   const hash = await HashOps.getHash(args[0]);
   process.stdout.write(`${hash}${EOL}`);
 }
+const handlerCompress = async (args) => {
+  await CompressOps.compress(args[0], args[1]);
+}
+const handlerDecompress = async (args) => {
+  await CompressOps.decompress(args[0], args[1]);
+}
 
 const commandHandlers = {
   ['.exit']: handleExit,
@@ -69,6 +76,8 @@ const commandHandlers = {
   ['rm']: handleRemove,
   ['os']: handleOsCommand,
   ['hash']: handleHash,
+  ['compress']: handlerCompress,
+  ['decompress']: handlerDecompress,
 };
 
 const printCurrentDirectory = () => {
