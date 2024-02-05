@@ -20,17 +20,21 @@ export const read = async (filePath, writableStream) => {
 
 export const add = async (fileName, fileDirectory = './') => {
   const filePath = path.join(fileDirectory, fileName);
-  await fsPromises.appendFile(filePath, '');
+  await fsPromises.appendFile(filePath, '', { flag: 'ax' });
 };
 
-export const rename = async (currentFile, newFile) => {
-  await fsPromises.rename(currentFile, newFile);
+export const rename = async (filePath, newFileName) => {
+  const fileDirectory = path.dirname(filePath);
+  const renamedFilePath = path.join(fileDirectory, newFileName);
+  await fsPromises.rename(filePath, renamedFilePath);
 };
 
-export const copy = async (source, destination = `${source} copy`) => {
-  await add(destination);
-  const reader = createReadStream(source);
-  const writer = createWriteStream(destination);
+export const copy = async (filePath, destinationDirectory) => {
+  const fileName = path.basename(filePath);
+  const destinationFilePath = path.join(destinationDirectory, fileName);
+  await add(destinationFilePath);
+  const reader = createReadStream(filePath);
+  const writer = createWriteStream(destinationFilePath);
   reader.pipe(writer);
   await finished(writer);
 };
