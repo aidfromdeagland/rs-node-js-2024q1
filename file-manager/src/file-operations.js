@@ -38,3 +38,8 @@ export const copy = async (filePath, destinationDirectory) => {
   reader.pipe(writer);
   await finished(writer);
 };
+
+export const move = async (filePath, destinationDirectory) => {
+  await copy(filePath, destinationDirectory);
+  await fsPromises.rm(filePath);
+};
