@@ -1,9 +1,11 @@
+// TODO: take EOL and HOMEDIR from os-operations.js
 import { EOL, homedir } from 'node:os';
 import { printColors, whiteSpaceSplitRegex, quoteRegex } from './shared.js';
 import * as FileOps from './file-operations.js';
 import * as DirectoryOps from './directory-operations.js';
 import * as NavOps from './navigation-operations.js';
 import * as OsOps from './os-operations.js';
+import * as HashOps from './hash-operations.js';
 
 const invalidInputMessage = `${printColors.red}Invalid input${EOL}${printColors.reset}`;
 const operationFailedMessage = `${printColors.red}Operation failed${EOL}${printColors.reset}`;
@@ -49,6 +51,10 @@ const handleOsCommand = (args) => {
     process.stdout.write(invalidInputMessage);
   }
 };
+const handleHash = async (args) => {
+  const hash = await HashOps.getHash(args[0]);
+  process.stdout.write(`${hash}${EOL}`);
+}
 
 const commandHandlers = {
   ['.exit']: handleExit,
@@ -62,6 +68,7 @@ const commandHandlers = {
   ['mv']: handleMove,
   ['rm']: handleRemove,
   ['os']: handleOsCommand,
+  ['hash']: handleHash,
 };
 
 const printCurrentDirectory = () => {
