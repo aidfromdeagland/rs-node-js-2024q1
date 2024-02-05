@@ -1,7 +1,7 @@
 import { EOL } from 'node:os';
 import * as path from 'node:path';
 import * as fsPromises from 'node:fs/promises';
-import { createReadStream } from 'node:fs';
+import { createReadStream, createWriteStream } from 'node:fs';
 import { finished } from 'node:stream/promises';
 
 export const read = async (filePath, writableStream) => {
@@ -23,6 +23,14 @@ export const add = async (fileName, fileDirectory = './') => {
   await fsPromises.appendFile(filePath, '');
 };
 
-export const rename = async (sourceName, destinationName) => {
-  await fsPromises.rename(sourceName, destinationName);
+export const rename = async (currentFile, newFile) => {
+  await fsPromises.rename(currentFile, newFile);
+};
+
+export const copy = async (source, destination = `${source} copy`) => {
+  await add(destination);
+  const reader = createReadStream(source);
+  const writer = createWriteStream(destination);
+  reader.pipe(writer);
+  await finished(writer);
 };

@@ -29,6 +29,9 @@ const handleAdd = async (args) => {
 const handleRename = async (args) => {
   await FileOps.rename(args[0], args[1]);
 }
+const handleCopy = async (args) => {
+  await FileOps.copy(args[0], args[1]);
+}
 
 const commandHandlers = {
   ['.exit']: handleExit,
@@ -38,6 +41,7 @@ const commandHandlers = {
   ['cat']: handleConcatenation,
   ['add']: handleAdd,
   ['rn']: handleRename,
+  ['cp']: handleCopy,
 };
 
 const printCurrentDirectory = () => {
