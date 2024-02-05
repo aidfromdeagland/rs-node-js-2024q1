@@ -6,6 +6,7 @@ import * as NavOps from './navigation-operations.js';
 
 const invalidInputMessage = `${printColors.red}Invalid input${EOL}${printColors.reset}`;
 const operationFailedMessage = `${printColors.red}Operation failed${EOL}${printColors.reset}`;
+const nameNotProvidedMessage = `${printColors.red}Please, run script again and provide username via: npm run start -- --username=your_username${EOL}${printColors.reset}`;
 let userName = '';
 
 const handleExit = (args) => {
@@ -75,7 +76,7 @@ const setName = (args) => {
   userName = userNameEntry[1] || 'Incognito';
 };
 
-export const start = (args) => {
+const setProcessHandlers = () => {
   process.on('SIGINT', () => {
     process.exit(0);
   });
@@ -95,20 +96,29 @@ export const start = (args) => {
   });
 
   process.on('uncaughtException', (error) => {
-    console.error(error)
-    process.stdout.write(operationFailedMessage);
+    if (error?.message === 'name is not provided') {
+      process.stdout.write(nameNotProvidedMessage);
+      process.exit(1);
+    } else {
+      console.error(error)
+      process.stdout.write(operationFailedMessage);
+    }
   });
 
-  process.on('exit', () => {
-    process.stdout.write(`Thank you for using File Manager, ${userName}, goodbye!${EOL}`);
-  })
+  process.on('exit', (code) => {
+    if (code === 0) {
+      process.stdout.write(`Thank you for using File Manager, ${userName}, goodbye!${EOL}`);
+    }
+  });
+};
 
+export const start = (args) => {
+  setProcessHandlers();
+  setName(args);
+  process.chdir(homedir());
+  printCurrentDirectory();
+  process.stdout.write(`Welcome to the File Manager, ${userName}!${EOL}`);
   process.stdin.on('data', (data) => {
     handleUserInput(data.toString().trim());
   });
-
-  process.chdir(homedir());
-  printCurrentDirectory();
-  setName(args);
-  process.stdout.write(`Welcome to the File Manager, ${userName}!${EOL}`);
 }
