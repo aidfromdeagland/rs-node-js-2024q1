@@ -3,6 +3,7 @@ import { printColors, whiteSpaceSplitRegex, quoteRegex } from './shared.js';
 import * as FileOps from './file-operations.js';
 import * as DirectoryOps from './directory-operations.js';
 import * as NavOps from './navigation-operations.js';
+import * as OsOps from './os-operations.js';
 
 const invalidInputMessage = `${printColors.red}Invalid input${EOL}${printColors.reset}`;
 const operationFailedMessage = `${printColors.red}Operation failed${EOL}${printColors.reset}`;
@@ -11,34 +12,43 @@ let userName = '';
 
 const handleExit = (args) => {
   process.exit(0);
-}
+};
 const handleUp = (args) => {
   NavOps.changeDirectory('../');
-}
+};
 const handleChangeDirectory = (args) => {
   NavOps.changeDirectory(args[0]);
-}
+};
 const handleList = async (args) => {
   await DirectoryOps.printContentInTable(args[0]);
-}
+};
 const handleConcatenation = async (args) => {
   await FileOps.read(args[0], process.stdout);
 };
 const handleAdd = async (args) => {
   await FileOps.add(args[0], process.cwd());
-}
+};
 const handleRename = async (args) => {
   await FileOps.rename(args[0], args[1]);
-}
+};
 const handleCopy = async (args) => {
   await FileOps.copy(args[0], args[1]);
-}
+};
 const handleMove = async (args) => {
   await FileOps.move(args[0], args[1]);
-}
+};
 const handleRemove = async (args) => {
   await FileOps.remove(args[0]);
-}
+};
+const handleOsCommand = (args) => {
+  // TODO: consider refactoring (it looks like this handler should not be responsible for printing to stdout)
+  const commandResult = OsOps.handleCommand(args[0]);
+  if (commandResult) {
+    process.stdout.write(`${commandResult}${EOL}`);
+  } else {
+    process.stdout.write(invalidInputMessage);
+  }
+};
 
 const commandHandlers = {
   ['.exit']: handleExit,
@@ -51,6 +61,7 @@ const commandHandlers = {
   ['cp']: handleCopy,
   ['mv']: handleMove,
   ['rm']: handleRemove,
+  ['os']: handleOsCommand,
 };
 
 const printCurrentDirectory = () => {
