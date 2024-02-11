@@ -1,5 +1,7 @@
+import 'dotenv/config';
+
 const Server = () => {
-  console.log('yas');
+  console.log(process.env.PORT);
 };
 
 Server();
