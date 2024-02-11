@@ -1,0 +1,11 @@
+{
+  "watch": ["src"],
+  "ext": "ts,js,json",
+  "ignore": ["node_modules", "build"],
+  "exec": "node --loader ts-node/esm ./src/server.ts",
+  "execDefault": "ts-node -r tsconfig-paths/register ./src/server.ts",
+  "restartable": "rs",
+  "env": {
+    "NODE_ENV": "development"
+  }
+}

@@ -1,5 +1,5 @@
 const Server = () => {
-  console.log('ya');
+  console.log('yas');
 };
 
 Server();

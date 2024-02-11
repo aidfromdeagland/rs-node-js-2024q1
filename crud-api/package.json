@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node --loader ts-node/esm src/server.js",
+    "start": "nodemon",
     "lint": "eslint ./src/*"
   },
   "author": "stanislau laniuk",
