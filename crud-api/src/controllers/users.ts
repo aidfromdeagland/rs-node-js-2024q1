@@ -69,6 +69,23 @@ const methodHandlers = new Map([
       res.end(JSON.stringify(user));
     },
   ],
+  [
+    'DELETE',
+    async (req: IncomingMessage, res: ServerResponse) => {
+      const id = getId(req.url);
+      if (!id) {
+        throw new Error('Bad request.');
+      }
+
+      if (!isValidUUID(id)) {
+        throw new Error('Invalid user id');
+      }
+
+      await UsersRepository.delete(id);
+      res.writeHead(204);
+      res.end();
+    },
+  ],
 ]);
 
 const UsersController = {
