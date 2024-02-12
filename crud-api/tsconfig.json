@@ -1,0 +1,33 @@
+{
+  "extends": "ts-node/node16/tsconfig.json",
+  "exclude": ["node_modules"],
+  "include": ["src"],
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+    /* Language and Environment */
+    "target": "ES2020",
+    "module": "ES2020",
+    "rootDir": ".",
+    "moduleResolution": "Node",
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/*"]
+    },
+    "resolveJsonModule": true,
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true
+  },
+  "ts-node": {
+    "esm": true,
+    "compilerOptions": {
+      "module": "ES2020",
+      "esModuleInterop": true
+    }
+  }
+}
