@@ -22,7 +22,7 @@ http
 
     if (apiPrefix !== 'api' || !controllers[controllerPath]) {
       res.writeHead(400);
-      res.end('Bad request');
+      res.end('Bad request.');
       return;
     }
 

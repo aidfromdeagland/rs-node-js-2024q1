@@ -1,14 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
-import { UsersRepository } from '../repositories/users.ts';
-
-const uuidRegexp =
-  /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
-
-const validateId = (id) => {
-  if (!uuidRegexp.test(id)) {
-    throw new Error('id is incorrect');
-  }
-};
+import { isValidUUID, isValidUserData, getRequestBody } from '../utils/index.ts';
+import { UsersRepository, UserModel } from '../repositories/users.ts';
 
 const getId = (url = '') => {
   const [, , id] = url.split('/').filter((route) => !!route);
@@ -21,7 +13,10 @@ const methodHandlers = new Map([
     async (req: IncomingMessage, res: ServerResponse) => {
       const id = getId(req.url);
       if (id) {
-        validateId(id);
+        if (!isValidUUID(id)) {
+          throw new Error('Invalid user id');
+        }
+
         const user = await UsersRepository.getById(id);
         res.writeHead(200);
         res.end(JSON.stringify(user));
@@ -30,6 +25,26 @@ const methodHandlers = new Map([
       const users = await UsersRepository.getAll();
       res.writeHead(200);
       res.end(JSON.stringify(users));
+    },
+  ],
+  [
+    'POST',
+    async (req: IncomingMessage, res: ServerResponse) => {
+      const id = getId(req.url);
+      if (id) {
+        res.writeHead(400);
+        res.end('Bad request.');
+      } else {
+        const body = await getRequestBody(req);
+        if (!isValidUserData(body)) {
+          throw new Error('Incorrect user data');
+        }
+
+        const { username, age, hobbies } = body as Omit<UserModel, 'id'>;
+        const user = await UsersRepository.create({ username, age, hobbies });
+        res.writeHead(201);
+        res.end(JSON.stringify(user));
+      }
     },
   ],
 ]);
@@ -42,7 +57,7 @@ const UsersController = {
       handler(req, res);
     } else {
       res.writeHead(400);
-      res.end('unsupported method');
+      res.end('Unsupported method.');
     }
   },
 };
