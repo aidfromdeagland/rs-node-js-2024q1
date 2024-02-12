@@ -11,7 +11,7 @@ const users: Map<string, UserModel> = new Map();
 
 export const UsersRepository = {
   async getAll() {
-    return users.values();
+    return Array.from(users).map((entry) => entry[1]);
   },
 
   async getById(id: string) {

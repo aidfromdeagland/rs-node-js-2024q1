@@ -16,9 +16,11 @@
     "resolveJsonModule": true,
     "outDir": "./build",
     "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "skipLibCheck": true
   },
   "ts-node": {
