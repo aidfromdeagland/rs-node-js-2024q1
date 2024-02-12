@@ -1,4 +1,5 @@
 import { IncomingMessage } from 'node:http';
+import { InvalidJSONStructure } from './errors.ts';
 
 const uuidRegexp =
   /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
@@ -37,6 +38,11 @@ export const getRequestBody = (req: IncomingMessage) =>
       })
       .on('end', () => {
         body = Buffer.concat(chunks).toString();
-        resolve(JSON.parse(body));
+        try {
+          const result = JSON.parse(body);
+          resolve(result);
+        } catch (error) {
+          reject(new InvalidJSONStructure());
+        }
       });
   });

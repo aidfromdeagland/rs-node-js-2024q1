@@ -15,6 +15,7 @@ module.exports = {
     'prettier/prettier': 'error',
     'no-console': 'off',
     'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': 'error',
+    'max-classes-per-file': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '[_]*' }],
   },
 };

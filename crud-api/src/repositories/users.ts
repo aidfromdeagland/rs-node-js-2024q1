@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { NoUserError } from '../shared/errors.ts';
 
 export type UserModel = {
   id: string;
@@ -17,7 +18,7 @@ export const UsersRepository = {
   async getById(id: string) {
     const user = users.get(id);
     if (!user) {
-      throw new Error('there is no user with provided id');
+      throw new NoUserError();
     }
 
     return user;
@@ -33,7 +34,7 @@ export const UsersRepository = {
   async update(id: string, data: Omit<UserModel, 'id'>) {
     const user = users.get(id);
     if (!user) {
-      throw new Error('there is no user with provided id');
+      throw new NoUserError();
     }
 
     Object.assign(user, data);
@@ -42,7 +43,7 @@ export const UsersRepository = {
 
   async delete(id: string) {
     if (!users.delete(id)) {
-      throw new Error('there is no user with provided id');
+      throw new NoUserError();
     }
   },
 };

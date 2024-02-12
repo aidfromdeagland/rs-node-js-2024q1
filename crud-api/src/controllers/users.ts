@@ -1,6 +1,12 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
-import { isValidUUID, isValidUserData, getRequestBody } from '../utils/index.ts';
 import { UsersRepository, UserModel } from '../repositories/users.ts';
+import { isValidUUID, isValidUserData, getRequestBody } from '../shared/utils.ts';
+import {
+  BadRequestError,
+  InvalidUserIdError,
+  InvalidUserPayloadError,
+  InvalidRouteError,
+} from '../shared/errors.ts';
 
 const getId = (url = '') => {
   const [, , id] = url.split('/').filter((route) => !!route);
@@ -14,7 +20,7 @@ const methodHandlers = new Map([
       const id = getId(req.url);
       if (id) {
         if (!isValidUUID(id)) {
-          throw new Error('Invalid user id');
+          throw new InvalidUserIdError();
         }
 
         const user = await UsersRepository.getById(id);
@@ -32,12 +38,12 @@ const methodHandlers = new Map([
     async (req: IncomingMessage, res: ServerResponse) => {
       const id = getId(req.url);
       if (id) {
-        throw new Error('Bad request.');
+        throw new InvalidRouteError();
       }
 
       const body = await getRequestBody(req);
       if (!isValidUserData(body)) {
-        throw new Error('Incorrect user data');
+        throw new InvalidUserPayloadError();
       }
 
       const { username, age, hobbies } = body as Omit<UserModel, 'id'>;
@@ -51,16 +57,16 @@ const methodHandlers = new Map([
     async (req: IncomingMessage, res: ServerResponse) => {
       const id = getId(req.url);
       if (!id) {
-        throw new Error('Bad request.');
+        throw new BadRequestError();
       }
 
       if (!isValidUUID(id)) {
-        throw new Error('Invalid user id');
+        throw new InvalidUserIdError();
       }
 
       const body = await getRequestBody(req);
       if (!isValidUserData(body)) {
-        throw new Error('Incorrect user data.');
+        throw new InvalidUserPayloadError();
       }
 
       const { username, age, hobbies } = body as Omit<UserModel, 'id'>;
@@ -74,11 +80,11 @@ const methodHandlers = new Map([
     async (req: IncomingMessage, res: ServerResponse) => {
       const id = getId(req.url);
       if (!id) {
-        throw new Error('Bad request.');
+        throw new BadRequestError();
       }
 
       if (!isValidUUID(id)) {
-        throw new Error('Invalid user id');
+        throw new InvalidUserIdError();
       }
 
       await UsersRepository.delete(id);
@@ -92,12 +98,11 @@ const UsersController = {
   async handle(req: IncomingMessage, res: ServerResponse) {
     const method = req.method || '';
     const handler = methodHandlers.get(method);
-    if (handler) {
-      await handler(req, res);
-    } else {
-      res.writeHead(400);
-      res.end('Bad request.');
+    if (!handler) {
+      throw new BadRequestError();
     }
+
+    await handler(req, res);
   },
 };
 
