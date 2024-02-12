@@ -19,5 +19,7 @@ npm install
 use script command to launch the server (launches in dev mode):
 
 ```
-npm run start
+npm run start:dev
 ```
+
+You can specify the port for node application with help of .env file(see .env.example).

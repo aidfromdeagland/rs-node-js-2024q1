@@ -4,9 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "start": "nodemon",
-    "lint": "eslint ./src/*"
+    "start:dev": "nodemon"
   },
   "author": "stanislau laniuk",
   "license": "ISC",
