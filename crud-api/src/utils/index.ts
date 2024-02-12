@@ -8,7 +8,7 @@ export const isValidUserData = (data) => {
   if (!data) {
     return false;
   }
-  if (typeof data.name !== 'string') {
+  if (typeof data.username !== 'string') {
     return false;
   }
   if (!Number.isInteger(data.age)) {

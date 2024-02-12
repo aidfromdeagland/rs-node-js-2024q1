@@ -25,7 +25,7 @@ export const UsersRepository = {
 
   async create(data: Omit<UserModel, 'id'>) {
     const id = crypto.randomUUID();
-    const user = { ...data, id };
+    const user = { id, ...data };
     users.set(id, user);
     return user;
   },

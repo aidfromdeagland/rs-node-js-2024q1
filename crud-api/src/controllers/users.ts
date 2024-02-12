@@ -32,19 +32,41 @@ const methodHandlers = new Map([
     async (req: IncomingMessage, res: ServerResponse) => {
       const id = getId(req.url);
       if (id) {
-        res.writeHead(400);
-        res.end('Bad request.');
-      } else {
-        const body = await getRequestBody(req);
-        if (!isValidUserData(body)) {
-          throw new Error('Incorrect user data');
-        }
-
-        const { username, age, hobbies } = body as Omit<UserModel, 'id'>;
-        const user = await UsersRepository.create({ username, age, hobbies });
-        res.writeHead(201);
-        res.end(JSON.stringify(user));
+        throw new Error('Bad request.');
       }
+
+      const body = await getRequestBody(req);
+      if (!isValidUserData(body)) {
+        throw new Error('Incorrect user data');
+      }
+
+      const { username, age, hobbies } = body as Omit<UserModel, 'id'>;
+      const user = await UsersRepository.create({ username, age, hobbies });
+      res.writeHead(201);
+      res.end(JSON.stringify(user));
+    },
+  ],
+  [
+    'PUT',
+    async (req: IncomingMessage, res: ServerResponse) => {
+      const id = getId(req.url);
+      if (!id) {
+        throw new Error('Bad request.');
+      }
+
+      if (!isValidUUID(id)) {
+        throw new Error('Invalid user id');
+      }
+
+      const body = await getRequestBody(req);
+      if (!isValidUserData(body)) {
+        throw new Error('Incorrect user data.');
+      }
+
+      const { username, age, hobbies } = body as Omit<UserModel, 'id'>;
+      const user = await UsersRepository.update(id, { username, age, hobbies });
+      res.writeHead(201);
+      res.end(JSON.stringify(user));
     },
   ],
 ]);
@@ -54,10 +76,10 @@ const UsersController = {
     const method = req.method || '';
     const handler = methodHandlers.get(method);
     if (handler) {
-      handler(req, res);
+      await handler(req, res);
     } else {
       res.writeHead(400);
-      res.end('Unsupported method.');
+      res.end('Bad request.');
     }
   },
 };
